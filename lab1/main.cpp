@@ -1,12 +1,11 @@
-﻿#include <type_traits>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <string>
-
+﻿#include <iostream>
+#include "StringConvertible.hpp"
+#include "StringBuffer.hpp"
 
 int main()
 {
+	using namespace Lab1;
+
 	StringConvertible Sstring;
 	std::string string = "string_first";
 
