@@ -1,0 +1,7 @@
+NotificationQueue analysis report:
+Date: 17-04-2023 22:14:30
+Queue size: 6 elements, 0.09375 KB
+Low priority messages percentage: 33.3333%
+Medium priority messages percentage: 33.3333%
+High priority messages percentage: 33.3333%
+Max expiry time difference: 599s
