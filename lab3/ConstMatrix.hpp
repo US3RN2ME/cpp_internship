@@ -39,13 +39,13 @@ namespace Lab3 {
 
 	public:
 		template <class _Pred = std::less<ValueType>>
-		void sortRows(_Pred pred = _Pred()) {
+		constexpr void sortRows(_Pred pred = _Pred()) {
 			for (SizeType i = 0; i < _Rows; ++i)
 				std::sort(m_data[i], m_data[i] + _Cols, pred);
 		}
 
 		template <class _Pred = std::less<ValueType>>
-		void sortCols(_Pred pred = _Pred()) {
+		constexpr void sortCols(_Pred pred = _Pred()) {
 			ConstMatrix<_Ty, _Cols, _Rows> transposed;
 
 			for (SizeType i = 0; i < _Cols; ++i)
