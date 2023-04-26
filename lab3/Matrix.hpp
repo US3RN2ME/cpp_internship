@@ -1,7 +1,7 @@
 #ifndef LAB3_MATRIX_HPP
 #define LAB3_MATRIX_HPP
 
-#include <utility>
+#include <algorithm>
 #include <string>
 #include <ostream>
 #include <exception>
@@ -60,6 +60,29 @@ namespace Lab3 {
         }
 
     public:
+        template <class Pred = std::less<ValueType>>
+        void sortRows(Pred pred = Pred()) {
+            for (SizeType i = 0; i < m_rows; i++)
+                std::sort(m_data[i], m_data[i] + m_cols, pred);
+        }
+
+        template <class Pred = std::less<ValueType>>
+        void sortCols(Pred pred = Pred()) {
+            Matrix transposed(cols(), rows());
+
+            for (SizeType i = 0; i < cols(); i++)
+                for (SizeType j = 0; j < rows(); j++)
+                    transposed[i][j] = m_data[j][i];
+
+            for (SizeType i = 0; i < cols(); i++)
+                sort(transposed[i], transposed[i] + rows(), pred);
+
+            for (SizeType i = 0; i < rows(); i++)
+                for (SizeType j = 0; j < cols(); j++)
+                    m_data[i][j] = transposed[j][i];
+        }
+
+    public:
         void resize(SizeType rows, SizeType cols) {
             clear();
             m_rows = rows;
@@ -106,9 +129,7 @@ namespace Lab3 {
     template <>
     class Matrix<std::string> {
     public:
-        using ValueType         = std::string;
-        using Reference         = std::string&;
-        using ConstReference    = const std::string&;
+        using ValueType         = std::string::value_type;
         using Pointer           = std::string*;
         using SizeType          = std::size_t;
 
@@ -151,10 +172,33 @@ namespace Lab3 {
         }
 
     public:
+        template <class Pred = std::less<ValueType>>
+        void sortRows(Pred pred = Pred()) {
+            for (SizeType i = 0; i < m_rows; i++)
+                std::sort(m_data[i].begin(), m_data[i].end(), pred);
+        }
+
+        template <class Pred = std::less<ValueType>>
+        void sortCols(Pred pred = Pred()) {
+            Matrix transposed(cols(), rows());
+
+            for (SizeType i = 0; i < cols(); i++)
+                for (SizeType j = 0; j < rows(); j++)
+                    transposed[i][j] = m_data[j][i];
+
+            for (SizeType i = 0; i < cols(); i++)
+                sort(transposed[i].begin(), transposed[i].end(), pred);
+
+            for (SizeType i = 0; i < rows(); i++)
+                for (SizeType j = 0; j < cols(); j++)
+                    m_data[i][j] = transposed[j][i];
+        }
+
+    public:
         void resize(SizeType rows, SizeType cols) {
             clear();
             m_rows = rows;
-            m_data = new ValueType[rows];
+            m_data = new std::string[rows];
             for (SizeType i = 0; i < rows; ++i)
                 m_data[i].resize(cols, ' ');
         }
@@ -175,11 +219,11 @@ namespace Lab3 {
         }
 
     public:
-        Reference operator[](SizeType row) {
+        std::string& operator[](SizeType row) {
             return m_data[row];
         }
 
-        ConstReference operator[](SizeType row) const {
+        const std::string& operator[](SizeType row) const {
             return m_data[row];
         }
 
