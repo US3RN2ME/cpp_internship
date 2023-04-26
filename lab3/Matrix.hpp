@@ -4,6 +4,7 @@
 #include <utility>
 #include <string>
 #include <ostream>
+#include <exception>
 
 namespace Lab3 {
 
@@ -210,6 +211,34 @@ namespace Lab3 {
             
         }
         return os;
+    }
+
+    template <class T>
+    Matrix<T> operator+(const Matrix<T>& left, const Matrix<T>& right)
+    {
+        if (left.cols() != right.cols() || left.rows() != right.rows())
+            throw std::invalid_argument("matrix sizes do not match");
+
+        Matrix<T> result(left.rows(), left.cols());
+        for (size_t row = 0; row < result.rows(); ++row)
+            for (size_t col = 0; col < result.cols(); ++col)
+                result[row][col] = left[row][col] + right[row][col];
+
+        return result;
+    }
+
+    template <class T>
+    Matrix<T> operator-(const Matrix<T>& left, const Matrix<T>& right)
+    {
+        if (left.cols() != right.cols() || left.rows() != right.rows())
+            throw std::invalid_argument("matrix sizes do not match");
+
+        Matrix<T> result(left.rows(), left.cols());
+        for (size_t row = 0; row < result.rows(); ++row)
+            for (size_t col = 0; col < result.cols(); ++col)
+                result[row][col] = left[row][col] - right[row][col];
+
+        return result;
     }
 }
 
