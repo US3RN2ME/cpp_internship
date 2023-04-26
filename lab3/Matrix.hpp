@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <string>
+#include <ostream>
 
 namespace Lab3 {
 
@@ -10,7 +11,7 @@ namespace Lab3 {
     class Matrix {
     public:
         using ValueType         = T;
-        using Pointer           = T**;
+        using Pointer           = T*;
         using ConstPointer      = T* const;
         using ConstPointerConst = const T* const;
         using SizeType          = std::size_t;
@@ -98,7 +99,7 @@ namespace Lab3 {
     private:
         SizeType m_rows{};
         SizeType m_cols{};
-        Pointer m_data{};
+        Pointer* m_data{};
     };
 
     template <>
@@ -185,6 +186,31 @@ namespace Lab3 {
         SizeType m_rows{};
         Pointer m_data{};
     };
+
+    template <class T>
+    auto operator<<(std::ostream& os, const Matrix<T>& matrix) ->
+        typename std::enable_if_t<std::is_integral_v<T>, std::ostream&>
+    {
+        for (size_t i = 0; i < matrix.rows(); i++) {
+            for (size_t j = 0; j < matrix.cols(); j++)
+                os << matrix[i][j] << " ; ";
+            os << '\n';
+        }
+        return os;
+    }
+
+    template <class T>
+    auto operator<<(std::ostream& os, const Matrix<T>& matrix) ->
+        typename std::enable_if_t<!std::is_integral_v<T>, std::ostream&> 
+    {
+        for (size_t i = 0; i < matrix.rows(); i++) {
+            for (size_t j = 0; j < matrix.cols(); j++)
+                os << matrix[i][j] << " | ";
+            os << '\n';
+            
+        }
+        return os;
+    }
 }
 
 #endif // !LAB3_MATRIX_HPP
