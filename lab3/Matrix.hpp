@@ -18,6 +18,8 @@ namespace Lab3 {
         using SizeType          = std::size_t;
 
     public:
+        Matrix() = default;
+
         Matrix(SizeType rows, SizeType cols) {
             resize(rows, cols);
         }
@@ -134,6 +136,8 @@ namespace Lab3 {
         using SizeType          = std::size_t;
 
     public:
+        Matrix() = default;
+
         Matrix(SizeType rows, SizeType cols) {
             resize(rows, cols);
         }
@@ -187,7 +191,7 @@ namespace Lab3 {
                     transposed[i][j] = m_data[j][i];
 
             for (SizeType i = 0; i < cols(); ++i)
-                sort(transposed[i].begin(), transposed[i].end(), pred);
+                std::sort(transposed[i].begin(), transposed[i].end(), pred);
 
             for (SizeType i = 0; i < rows(); ++i)
                 for (SizeType j = 0; j < cols(); ++j)
