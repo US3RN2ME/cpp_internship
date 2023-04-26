@@ -62,7 +62,7 @@ namespace Lab3 {
     public:
         template <class Pred = std::less<ValueType>>
         void sortRows(Pred pred = Pred()) {
-            for (SizeType i = 0; i < m_rows; i++)
+            for (SizeType i = 0; i < m_rows; ++i)
                 std::sort(m_data[i], m_data[i] + m_cols, pred);
         }
 
@@ -70,15 +70,15 @@ namespace Lab3 {
         void sortCols(Pred pred = Pred()) {
             Matrix transposed(cols(), rows());
 
-            for (SizeType i = 0; i < cols(); i++)
-                for (SizeType j = 0; j < rows(); j++)
+            for (SizeType i = 0; i < cols(); ++i)
+                for (SizeType j = 0; j < rows(); ++j)
                     transposed[i][j] = m_data[j][i];
 
-            for (SizeType i = 0; i < cols(); i++)
-                sort(transposed[i], transposed[i] + rows(), pred);
+            for (SizeType i = 0; i < cols(); ++i)
+                std::sort(transposed[i], transposed[i] + rows(), pred);
 
-            for (SizeType i = 0; i < rows(); i++)
-                for (SizeType j = 0; j < cols(); j++)
+            for (SizeType i = 0; i < rows(); ++i)
+                for (SizeType j = 0; j < cols(); ++j)
                     m_data[i][j] = transposed[j][i];
         }
 
@@ -174,7 +174,7 @@ namespace Lab3 {
     public:
         template <class Pred = std::less<ValueType>>
         void sortRows(Pred pred = Pred()) {
-            for (SizeType i = 0; i < m_rows; i++)
+            for (SizeType i = 0; i < m_rows; ++i)
                 std::sort(m_data[i].begin(), m_data[i].end(), pred);
         }
 
@@ -182,15 +182,15 @@ namespace Lab3 {
         void sortCols(Pred pred = Pred()) {
             Matrix transposed(cols(), rows());
 
-            for (SizeType i = 0; i < cols(); i++)
-                for (SizeType j = 0; j < rows(); j++)
+            for (SizeType i = 0; i < cols(); ++i)
+                for (SizeType j = 0; j < rows(); ++j)
                     transposed[i][j] = m_data[j][i];
 
-            for (SizeType i = 0; i < cols(); i++)
+            for (SizeType i = 0; i < cols(); ++i)
                 sort(transposed[i].begin(), transposed[i].end(), pred);
 
-            for (SizeType i = 0; i < rows(); i++)
-                for (SizeType j = 0; j < cols(); j++)
+            for (SizeType i = 0; i < rows(); ++i)
+                for (SizeType j = 0; j < cols(); ++j)
                     m_data[i][j] = transposed[j][i];
         }
 
@@ -236,8 +236,8 @@ namespace Lab3 {
     auto operator<<(std::ostream& os, const Matrix<T>& matrix) ->
         typename std::enable_if_t<std::is_integral_v<T>, std::ostream&>
     {
-        for (size_t i = 0; i < matrix.rows(); i++) {
-            for (size_t j = 0; j < matrix.cols(); j++)
+        for (size_t i = 0; i < matrix.rows(); ++i) {
+            for (size_t j = 0; j < matrix.cols(); ++j)
                 os << matrix[i][j] << " ; ";
             os << '\n';
         }
@@ -248,39 +248,36 @@ namespace Lab3 {
     auto operator<<(std::ostream& os, const Matrix<T>& matrix) ->
         typename std::enable_if_t<!std::is_integral_v<T>, std::ostream&> 
     {
-        for (size_t i = 0; i < matrix.rows(); i++) {
-            for (size_t j = 0; j < matrix.cols(); j++)
+        for (size_t i = 0; i < matrix.rows(); ++i) {
+            for (size_t j = 0; j < matrix.cols(); ++j)
                 os << matrix[i][j] << " | ";
             os << '\n';
-            
         }
         return os;
     }
 
     template <class T>
-    Matrix<T> operator+(const Matrix<T>& left, const Matrix<T>& right)
-    {
+    Matrix<T> operator+(const Matrix<T>& left, const Matrix<T>& right) {
         if (left.cols() != right.cols() || left.rows() != right.rows())
             throw std::invalid_argument("matrix sizes do not match");
 
         Matrix<T> result(left.rows(), left.cols());
-        for (size_t row = 0; row < result.rows(); ++row)
-            for (size_t col = 0; col < result.cols(); ++col)
-                result[row][col] = left[row][col] + right[row][col];
+        for (size_t i = 0; i < result.rows(); ++i)
+            for (size_t j = 0; j < result.cols(); ++j)
+                result[i][j] = left[i][j] + right[i][j];
 
         return result;
     }
 
     template <class T>
-    Matrix<T> operator-(const Matrix<T>& left, const Matrix<T>& right)
-    {
+    Matrix<T> operator-(const Matrix<T>& left, const Matrix<T>& right) {
         if (left.cols() != right.cols() || left.rows() != right.rows())
             throw std::invalid_argument("matrix sizes do not match");
 
         Matrix<T> result(left.rows(), left.cols());
-        for (size_t row = 0; row < result.rows(); ++row)
-            for (size_t col = 0; col < result.cols(); ++col)
-                result[row][col] = left[row][col] - right[row][col];
+        for (size_t i = 0; i < result.rows(); ++i)
+            for (size_t j = 0; j < result.cols(); ++j)
+                result[i][j] = left[i][j] - right[i][j];
 
         return result;
     }
