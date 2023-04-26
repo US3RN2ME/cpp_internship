@@ -2,6 +2,7 @@
 #define LAB3_MATRIX_HPP
 
 #include <utility>
+#include <string>
 
 namespace Lab3 {
 
@@ -97,6 +98,91 @@ namespace Lab3 {
     private:
         SizeType m_rows{};
         SizeType m_cols{};
+        Pointer m_data{};
+    };
+
+    template <>
+    class Matrix<std::string> {
+    public:
+        using ValueType         = std::string;
+        using Reference         = std::string&;
+        using ConstReference    = const std::string&;
+        using Pointer           = std::string*;
+        using SizeType          = std::size_t;
+
+    public:
+        Matrix(SizeType rows, SizeType cols) {
+            resize(rows, cols);
+        }
+
+        ~Matrix() {
+            clear();
+        }
+
+        Matrix(const Matrix& other) {
+            resize(other.rows(), other.cols());
+            for (SizeType i = 0; i < m_rows; ++i)
+                m_data[i] = other.m_data[i];
+        }
+
+        Matrix& operator=(const Matrix& other) {
+            if (this != &other) {
+                Matrix tmp(other);
+                std::swap(m_rows, tmp.m_rows);
+                std::swap(m_data, tmp.m_data);
+            }
+            return *this;
+        }
+
+        Matrix(Matrix&& other) noexcept {
+            std::swap(m_rows, other.m_rows);
+            std::swap(m_data, other.m_data);
+        }
+
+        Matrix& operator=(Matrix&& other) noexcept {
+            if (this != &other) {
+                clear();
+                std::swap(m_rows, other.m_rows);
+                std::swap(m_data, other.m_data);
+            }
+            return *this;
+        }
+
+    public:
+        void resize(SizeType rows, SizeType cols) {
+            clear();
+            m_rows = rows;
+            m_data = new ValueType[rows];
+            for (SizeType i = 0; i < rows; ++i)
+                m_data[i].resize(cols, ' ');
+        }
+
+        void clear() {
+            delete[] m_data;
+            m_data = nullptr;
+            m_rows = 0;
+        }
+
+    public:
+        SizeType rows() const noexcept {
+            return m_rows;
+        }
+
+        SizeType cols() const noexcept {
+            return m_rows ? m_data[0].size() : 0;
+        }
+
+    public:
+        Reference operator[](SizeType row) {
+            return m_data[row];
+        }
+
+        ConstReference operator[](SizeType row) const {
+            return m_data[row];
+        }
+
+    private:
+        SizeType m_rows{};
         Pointer m_data{};
     };
 }
