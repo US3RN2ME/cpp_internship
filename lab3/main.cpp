@@ -53,7 +53,7 @@ void matrixTest() {
 
 	std::cout << "\nMatrix1:\n" << matrix;
 	std::cout << "\nMatrix2:\n" << matrix1;
-
+	
 	Matrix<int> diff{ std::move(matrix - matrix1) };
 	std::cout << "\nDiff:\n"	<< diff << '\n';
 
@@ -62,6 +62,17 @@ void matrixTest() {
 	diff[1][1] = 4;
 
 	std::cout << "\nResized:\n" << diff << '\n';
+
+	Matrix<std::string> matrix2(10, 10);
+	for (size_t i = 0; i < matrix2.rows(); ++i)
+		for (size_t j = 0; j < matrix2.cols(); ++j)
+			matrix2[i][j] = 'a' + rand() % 26;
+
+	std::cout << "\nString matrix:\n" << matrix2 << '\n';
+
+	Matrix<std::string> matrix3(matrix2);
+
+	std::cout << "\nString matrix copy:\n" << matrix3 << '\n';
 }
 
 int main()
