@@ -75,6 +75,10 @@ namespace Lab4 {
 	private:
 		const QueueType& m_queue;
 	};
+
+	template <typename T>
+	QueueAnalyzer(const NotificationQueue<T>&) -> QueueAnalyzer<T>;
+
 }
 
 #endif // !LAB4_QUEUE_ANALYZER_HPP
