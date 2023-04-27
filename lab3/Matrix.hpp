@@ -29,34 +29,26 @@ namespace Lab3 {
         }
 
         Matrix(const Matrix& other) {
-            resize(other.m_rows, other.m_cols);
+            resize(other.rows(), other.cols());
             for (SizeType i = 0; i < m_rows; ++i)
-                for (SizeType j = 0; j < m_cols; ++j)
-                    m_data[i][j] = other.m_data[i][j];
+                std::copy(other.m_data[i], other.m_data[i] + other.m_cols, m_data[i]);
         }
 
         Matrix& operator=(const Matrix& other) {
             if (this != &other) {
                 Matrix tmp(other);
-                std::swap(m_rows, tmp.m_rows);
-                std::swap(m_cols, tmp.m_cols);
-                std::swap(m_data, tmp.m_data);
+                swap(tmp);
             }
             return *this;
         }
 
         Matrix(Matrix&& other) noexcept {
-            std::swap(m_rows, other.m_rows);
-            std::swap(m_cols, other.m_cols);
-            std::swap(m_data, other.m_data);
+            swap(other);
         }
 
         Matrix& operator=(Matrix&& other) noexcept {
             if (this != &other) {
-                clear();
-                std::swap(m_rows, other.m_rows);
-                std::swap(m_cols, other.m_cols);
-                std::swap(m_data, other.m_data);
+                swap(other);
             }
             return *this;
         }
@@ -123,6 +115,13 @@ namespace Lab3 {
         }
 
     private:
+        void swap(Matrix& other) noexcept {
+            std::swap(m_rows, other.m_rows);
+            std::swap(m_cols, other.m_cols);
+            std::swap(m_data, other.m_data);
+        }
+
+    private:
         SizeType m_rows{};
         SizeType m_cols{};
         Pointer* m_data{};
@@ -148,29 +147,24 @@ namespace Lab3 {
 
         Matrix(const Matrix& other) {
             resize(other.rows(), other.cols());
-            for (SizeType i = 0; i < m_rows; ++i)
-                m_data[i] = other.m_data[i];
+            std::copy(other.m_data, other.m_data + other.m_rows, m_data);
         }
 
         Matrix& operator=(const Matrix& other) {
             if (this != &other) {
                 Matrix tmp(other);
-                std::swap(m_rows, tmp.m_rows);
-                std::swap(m_data, tmp.m_data);
+                swap(tmp);
             }
             return *this;
         }
 
         Matrix(Matrix&& other) noexcept {
-            std::swap(m_rows, other.m_rows);
-            std::swap(m_data, other.m_data);
+            swap(other);
         }
 
         Matrix& operator=(Matrix&& other) noexcept {
             if (this != &other) {
-                clear();
-                std::swap(m_rows, other.m_rows);
-                std::swap(m_data, other.m_data);
+                swap(other);
             }
             return *this;
         }
@@ -229,6 +223,12 @@ namespace Lab3 {
 
         const std::string& operator[](SizeType row) const {
             return m_data[row];
+        }
+
+    private:
+        void swap(Matrix& other) noexcept {
+            std::swap(m_rows, other.m_rows);
+            std::swap(m_data, other.m_data);
         }
 
     private:
