@@ -61,9 +61,11 @@ namespace Lab2 {
 					return left.isExpired();
 				});
 
+			const auto numRemoved = std::distance(it, m_data.end());
+
 			m_data.erase(it, m_data.end());
 
-			return std::distance(it, m_data.end());
+			return numRemoved;
 		}
 
 	public:
