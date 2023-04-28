@@ -1,7 +1,7 @@
 #ifndef LAB4_MESSAGE_HPP
 #define LAB4_MESSAGE_HPP
 
-#include <chrono>
+#include "Util.hpp"
 
 namespace Lab4 {
 
@@ -10,9 +10,6 @@ namespace Lab4 {
 		Medium,
 		High
 	};
-
-	using Clock		= std::chrono::steady_clock;
-	using TimePoint = std::chrono::time_point<Clock>;
 
 	template<class T>
 	class Message {
