@@ -4,7 +4,10 @@
 #include <algorithm>
 #include <deque>
 #include <optional>
+#include <mutex>
+#include <condition_variable>
 #include "Message.hpp"
+#include "Logger.hpp"
 
 namespace Lab4 {
 
@@ -25,7 +28,11 @@ namespace Lab4 {
 		{ }
 
 		bool addMessage(const Message& message) {
-			if (isFull() && !cleanupExpiredMessages()) {
+			std::unique_lock lock{ m_mutex };
+
+			if (m_data.size() == m_capacity && !cleanupExpiredMessages() && 
+				!m_addCondition.wait_for(lock, 500ms, [this]() { return m_data.size() < m_capacity; })) {
+				LOG("Queue is full\n");
 				return false;
 			}
 
@@ -37,14 +44,24 @@ namespace Lab4 {
 
 			m_data.insert(it, message);
 
+			LOG("Message added to queue\n");
+
+			m_getCondition.notify_one();
+
 			return true;
 		}
 
 		std::optional<Message> getMessage() noexcept {
-			while (!isEmpty()) {
+			using namespace std::chrono_literals;
+			std::unique_lock lock{ m_mutex };
 
+			while (m_getCondition.wait_for(lock, 500ms, [this]() { return !m_data.empty(); })) {
 				auto msg = std::move(m_data.front());
 				m_data.pop_front();
+
+				LOG("Message removed from queue\n");
+
+				m_addCondition.notify_one();
 
 				if (msg.isExpired()) {
 					continue;
@@ -52,38 +69,51 @@ namespace Lab4 {
 
 				return msg;
 			}
+
+			LOG("Queue is empty\n");
+
 			return {};
 		}
 
+	public:
+		bool isFull() const noexcept {
+			std::lock_guard lock{ m_mutex };
+			return m_data.size() >= m_capacity;
+		}
+
+		bool isEmpty() const noexcept {
+			std::lock_guard lock{ m_mutex };
+			return m_data.empty();
+		}
+
+		SizeType size() const noexcept {
+			std::lock_guard lock{ m_mutex };
+			return m_data.size();
+		}
+
+		SizeType capacity() const noexcept {
+			std::lock_guard lock{ m_mutex };
+			return m_capacity;
+		}
+
+	private:
 		SizeType cleanupExpiredMessages() {
 			auto it = std::remove_if(m_data.begin(), m_data.end(),
 				[](const auto& left) {
 					return left.isExpired();
 				});
 
+			const auto numRemoved = std::distance(it, m_data.end());
+
 			m_data.erase(it, m_data.end());
 
-			return std::distance(it, m_data.end());
-		}
-
-	public:
-		bool isFull() const noexcept {
-			return m_data.size() >= m_capacity;
-		}
-
-		bool isEmpty() const noexcept {
-			return m_data.empty();
-		}
-
-		SizeType size() const noexcept {
-			return m_data.size();
-		}
-
-		SizeType capacity() const noexcept {
-			return m_capacity;
+			return numRemoved;
 		}
 
 	private:
+		std::condition_variable m_getCondition;
+		std::condition_variable m_addCondition;
+		mutable std::mutex m_mutex;
 		SizeType m_capacity;
 		Container m_data;
 	};
