@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <string>
+#include <sstream>
+#include <mutex>
 #include "Util.hpp"
 #include "NotificationQueue.hpp"
 
@@ -19,24 +21,27 @@ namespace Lab4 {
 		{}
 
 	public:
-		void analyze(std::string filename) const {
-			std::ofstream file{ filename, std::ios::app };
+		void analyze(const std::string& filename) const {
+			std::stringstream ss;
+			ss << "NotificationQueue analysis report:\n";
 
-			file << "NotificationQueue analysis report:\n";
+			ss << "Date: " << currentDateTime() << '\n';
 
-			file << "Date: " << currentDateTime() << '\n';
-
-			file << "Queue size: " << m_queue.size() << " elements, "
+			ss << "Queue size: " << m_queue.size() << " elements, "
 				<< queueSizeKb() << " KB\n";
 
-			file << "Low priority messages percentage: "
+			ss << "Low priority messages percentage: "
 				<< countPriorityPercentage(MessagePriority::Low) << "%\n";
-			file << "Medium priority messages percentage: "
+			ss << "Medium priority messages percentage: "
 				<< countPriorityPercentage(MessagePriority::Medium) << "%\n";
-			file << "High priority messages percentage: "
+			ss << "High priority messages percentage: "
 				<< countPriorityPercentage(MessagePriority::High) << "%\n";
 
-			file << "Max expiry time difference: " << maxExpiryTimeDiff() << "s\n";
+			ss << "Max expiry time difference: " << maxExpiryTimeDiff() << '\n';
+
+			std::lock_guard lock{ m_mutex };
+			std::ofstream file{ filename, std::ios::app };
+			file << ss.str();
 		}
 
 	private:
@@ -46,6 +51,7 @@ namespace Lab4 {
 		}
 
 		double countPriorityPercentage(MessagePriority priority) const {
+			std::lock_guard lock{ m_queue.m_mutex };
 			const auto count = std::count_if(
 				m_queue.m_data.begin(), m_queue.m_data.end(),
 				[&priority](const auto& left) {
@@ -53,11 +59,12 @@ namespace Lab4 {
 						static_cast<int>(priority);
 				});
 
-			return count * 100. / m_queue.size();
+			return count * 100. / m_queue.m_data.size();
 		}
 
 		template <class Duration = std::chrono::milliseconds>
 		Duration maxExpiryTimeDiff() const {
+			std::lock_guard lock{ m_queue.m_mutex };
 			const auto [min, max] = std::minmax_element(
 				m_queue.m_data.begin(), m_queue.m_data.end(),
 				[](const auto& left, const auto& right) {
@@ -69,6 +76,7 @@ namespace Lab4 {
 		}
 
 	private:
+		mutable std::mutex m_mutex;
 		const QueueType& m_queue;
 	};
 
