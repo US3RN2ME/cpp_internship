@@ -11,7 +11,7 @@ int main() {
 	NotificationQueue<int> notificationQueue{ 10 };
 	QueueAnalyzer<int> queueAnalyzer{ notificationQueue };
 
-	constexpr auto duration = 5min;
+	constexpr auto duration = 10s;
 
 	const auto addOrGetMessage = [&notificationQueue]() {
 		Timer timer;
@@ -51,10 +51,15 @@ int main() {
 		}
 	};
 
-	std::jthread th1(addOrGetMessage);
-	std::jthread th2(addOrGetMessage);
-	std::jthread th3(addOrGetMessage);
-	std::jthread th4(getMessage);
-	std::jthread th5(analyze);
+	{
+		std::jthread th1(addOrGetMessage);
+		std::jthread th2(addOrGetMessage);
+		std::jthread th3(addOrGetMessage);
+		std::jthread th4(getMessage);
+		std::jthread th5(analyze);
+	}
+
+	LOG("AnalyzeCount: ", queueAnalyzer.getAnalyzeCount(), '\n');
+	
 	return 0;
 }

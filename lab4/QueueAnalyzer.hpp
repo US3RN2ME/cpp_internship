@@ -21,7 +21,7 @@ namespace Lab4 {
 		{}
 
 	public:
-		void analyze(const std::string& filename) const {
+		void analyze(const std::string& filename) {
 			std::stringstream ss;
 			ss << "NotificationQueue analysis report:\n";
 
@@ -40,8 +40,13 @@ namespace Lab4 {
 			ss << "Max expiry time difference: " << maxExpiryTimeDiff() << '\n';
 
 			std::lock_guard lock{ m_mutex };
+			++m_analyzeCount;
 			std::ofstream file{ filename, std::ios::app };
 			file << ss.str();
+		}
+
+		size_t getAnalyzeCount() const noexcept {
+			return m_analyzeCount;
 		}
 
 	private:
@@ -76,7 +81,8 @@ namespace Lab4 {
 		}
 
 	private:
-		mutable std::mutex m_mutex;
+		size_t m_analyzeCount{};
+		mutable std::mutex m_mutex{};
 		const QueueType& m_queue;
 	};
 
