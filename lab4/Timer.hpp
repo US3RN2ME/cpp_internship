@@ -25,8 +25,6 @@ namespace Lab4 {
 		TimePoint last;
 	};
 
-
 }
-
 
 #endif // !LAB4_TIMER_HPP
