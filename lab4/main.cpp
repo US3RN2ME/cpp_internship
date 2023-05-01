@@ -11,7 +11,7 @@ int main() {
 	NotificationQueue<int> notificationQueue{ 10 };
 	QueueAnalyzer<int> queueAnalyzer{ notificationQueue };
 
-	constexpr auto duration = 10s;
+	constexpr auto duration = 5min;
 
 	const auto addOrGetMessage = [&notificationQueue]() {
 		Timer timer;
