@@ -10,6 +10,9 @@
 namespace Lab4 {
 
 	class Logger {
+	private:
+		Logger() = default;
+
 	public:
 		static Logger& instance() noexcept {
 			static Logger logger;
@@ -31,6 +34,7 @@ namespace Lab4 {
 		std::ofstream m_file{ "log.txt", std::ios_base::app };
 		std::mutex m_mutex{};
 	};
+
 }
 
 #define LOG(...) \
