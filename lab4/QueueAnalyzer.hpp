@@ -37,7 +37,7 @@ namespace Lab4 {
 			ss << "High priority messages percentage: "
 				<< countPriorityPercentage(MessagePriority::High) << "%\n";
 
-			ss << "Max expiry time difference: " << maxExpiryTimeDiff() << '\n';
+			ss << "Max expiry time difference: " << maxExpiryTimeDiff() << "\n\n";
 
 			std::lock_guard lock{ m_mutex };
 			++m_analyzeCount;
@@ -46,6 +46,7 @@ namespace Lab4 {
 		}
 
 		size_t getAnalyzeCount() const noexcept {
+			std::lock_guard lock{ m_mutex };
 			return m_analyzeCount;
 		}
 
@@ -57,6 +58,9 @@ namespace Lab4 {
 
 		double countPriorityPercentage(MessagePriority priority) const {
 			std::lock_guard lock{ m_queue.m_mutex };
+
+			if (m_queue.m_data.empty()) return 0;
+
 			const auto count = std::count_if(
 				m_queue.m_data.begin(), m_queue.m_data.end(),
 				[&priority](const auto& left) {
@@ -70,6 +74,9 @@ namespace Lab4 {
 		template <class Duration = std::chrono::milliseconds>
 		Duration maxExpiryTimeDiff() const {
 			std::lock_guard lock{ m_queue.m_mutex };
+
+			if (m_queue.m_data.empty()) return Duration{};
+
 			const auto [min, max] = std::minmax_element(
 				m_queue.m_data.begin(), m_queue.m_data.end(),
 				[](const auto& left, const auto& right) {
