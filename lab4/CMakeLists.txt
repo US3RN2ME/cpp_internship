@@ -12,7 +12,7 @@ endif()
 project ("lab4")
 
 # Add source to this project's executable.
-add_executable (lab4 "main.cpp" "Message.hpp" "NotificationQueue.hpp" "QueueAnalyzer.hpp")
+add_executable (lab4 "main.cpp" "Message.hpp" "NotificationQueue.hpp" "QueueAnalyzer.hpp" "Logger.hpp" "Random.hpp" "Timer.hpp" "Util.hpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET lab4 PROPERTY CXX_STANDARD 20)
