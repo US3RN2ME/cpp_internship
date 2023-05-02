@@ -30,8 +30,11 @@ namespace Lab4 {
 		bool addMessage(const Message& message) {
 			std::unique_lock lock{ m_mutex };
 
-			if (m_data.size() == m_capacity && !cleanupExpiredMessages() && 
-				!m_addCondition.wait_for(lock, 500ms, [this]() { return m_data.size() < m_capacity; })) {
+			if (m_data.size() == m_capacity) {
+				cleanupExpiredMessages();
+			}
+
+			if (!m_addCondition.wait_for(lock, 500ms, [this]() { return m_data.size() < m_capacity; })) {
 				LOG("Queue is full\n");
 				return false;
 			}
