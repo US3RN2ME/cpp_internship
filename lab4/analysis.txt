@@ -1,0 +1,32 @@
+NotificationQueue analysis report:
+Date: 2023-05-02 15:01:11
+Queue size: 0 elements, 0 KB
+Low priority messages percentage: 0%
+Medium priority messages percentage: 0%
+High priority messages percentage: 0%
+Max expiry time difference: 0ms
+
+NotificationQueue analysis report:
+Date: 2023-05-02 15:02:12
+Queue size: 0 elements, 0 KB
+Low priority messages percentage: 0%
+Medium priority messages percentage: 0%
+High priority messages percentage: 0%
+Max expiry time difference: 0ms
+
+NotificationQueue analysis report:
+Date: 2023-05-02 15:03:12
+Queue size: 0 elements, 0 KB
+Low priority messages percentage: 0%
+Medium priority messages percentage: 0%
+High priority messages percentage: 0%
+Max expiry time difference: 0ms
+
+NotificationQueue analysis report:
+Date: 2023-05-02 15:04:13
+Queue size: 0 elements, 0 KB
+Low priority messages percentage: 0%
+Medium priority messages percentage: 0%
+High priority messages percentage: 0%
+Max expiry time difference: 0ms
+
